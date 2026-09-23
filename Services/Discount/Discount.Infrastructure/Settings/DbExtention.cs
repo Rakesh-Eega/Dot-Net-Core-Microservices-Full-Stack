@@ -1,6 +1,6 @@
-﻿using Grpc.Core.Logging;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Npgsql;
 
@@ -13,17 +13,18 @@ namespace Discount.Infrastructure.Settings
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var logger = services.GetRequiredService<ILogger>();
+                var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+                var logger = loggerFactory.CreateLogger("DbMigration");
                 var databaseSettings = services.GetRequiredService<IOptions<DatabaseSettings>>().Value;
                 try
                 {
-                    logger.Info("discount Db Migration started");
+                    logger.LogInformation("discount Db Migration started");
                     ApplyMigration(databaseSettings.ConnectionString);
-                    logger.Info("discount Db Migration completed");
+                    logger.LogInformation("discount Db Migration completed");
                 }
                 catch(Exception ex)
                 {
-                    logger.Error(ex, "Error occurred while migrating discount database");
+                    logger.LogError(ex, "Error occurred while migrating discount database");
                     throw;
                 }
             }

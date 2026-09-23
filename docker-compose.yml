@@ -1,3 +1,4 @@
+name: EShop
 services:
   catalogdb:
     image: mongo

@@ -23,7 +23,7 @@ services:
     POSTGRES_PASSWORD: Password@1
     POSTGRES_DB: discountdb
   volumes:
-      - postgres_data:/var/lib/postgresql/data/ 
+      - postgres_data:/var/lib/postgresql 
   healthcheck:
     test: ["CMD-SHELL", "pg_isready -U admin"]
     interval: 10s
@@ -48,6 +48,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "CacheSettings__ConnectionString=basketdb:6379"
+      - "GrpcSettings__DiscountUrl=http://discount:8080"
     depends_on:
       - basketdb
     ports:
